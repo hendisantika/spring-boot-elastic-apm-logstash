@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: spring-boot-elastic-apm-logstash
+
+  profiles:
+    active: default
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: yu71
+    password: 53cret
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# Elastic APM Configuration
+elastic:
+  apm:
+    enabled: true
+    server-url: ${ELASTIC_APM_SERVER_URL:http://localhost:8200}
+    secret-token: ${ELASTIC_APM_SECRET_TOKEN:}
+    service-name: ${spring.application.name}
+    service-version: 1.0.0
+    environment: ${ELASTIC_APM_ENVIRONMENT:development}
+    application-packages: com.example.elasticdemo
+    capture-body: all
+    capture-headers: true
+    log-level: INFO
+
+# Logging Configuration
+logging:
+  level:
+    com.example.elasticdemo: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      elastic:
+        enabled: true
+        host: ${ELASTIC_METRICS_HOST:http://localhost:9200}
+        index: metrics
+
+# Logstash Configuration
+logstash:
+  host: ${LOGSTASH_HOST:localhost}
+  port: ${LOGSTASH_PORT:5044}
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: production
+
+elastic:
+  apm:
+    environment: production
+    log-level: WARN
+
+logging:
+  level:
+    root: INFO
+    com.example.elasticdemo: INFO
