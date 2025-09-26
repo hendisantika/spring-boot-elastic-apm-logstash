@@ -109,4 +109,18 @@ public class UserController {
         List<User> users = userService.searchUsersByName(name);
         return ResponseEntity.ok(users);
     }
+
+    @PostMapping("/simulate-error")
+    @CaptureTransaction("simulate-error")
+    public ResponseEntity<String> simulateError() {
+        log.info("POST /api/users/simulate-error - Simulating error");
+
+        try {
+            throw new RuntimeException("This is a simulated error for testing");
+        } catch (Exception e) {
+            log.error("Simulated error occurred", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Simulated error: " + e.getMessage());
+        }
+    }
 }
