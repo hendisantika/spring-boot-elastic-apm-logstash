@@ -4,10 +4,12 @@ import id.my.hendisantika.elasticapmlogstash.entity.User;
 import id.my.hendisantika.elasticapmlogstash.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +41,29 @@ public class UserService {
         } catch (Exception e) {
             log.error("Error fetching all users", e);
             throw e;
+        }
+    }
+
+    @CaptureSpan("get-user-by-id")
+    public Optional<User> getUserById(Long id) {
+        MDC.put("userId", String.valueOf(id));
+
+        try {
+            log.info("Fetching user by id: {}", id);
+            Optional<User> user = userRepository.findById(id);
+
+            if (user.isPresent()) {
+                log.info("User found: {}", user.get().getEmail());
+            } else {
+                log.warn("User not found with id: {}", id);
+            }
+
+            return user;
+        } catch (Exception e) {
+            log.error("Error fetching user by id: {}", id, e);
+            throw e;
+        } finally {
+            MDC.remove("userId");
         }
     }
 }
