@@ -15,7 +15,7 @@
     <description>spring-boot-elastic-apm-logstash</description>
     <properties>
         <java.version>25</java.version>
-        <elastic-apm.version>1.44.0</elastic-apm.version>
+        <elastic-apm.version>1.55.1</elastic-apm.version>
     </properties>
     <dependencies>
         <!-- Spring Boot Starters -->
