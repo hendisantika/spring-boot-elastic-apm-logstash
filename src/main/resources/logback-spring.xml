@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>true</includeContext>
+            <includeMdc>true</includeMdc>
+            <customFields>{"service":"${spring.application.name:-elastic-demo-app}"}</customFields>
+            <fieldNames>
+                <timestamp>@timestamp</timestamp>
+                <message>message</message>
+                <level>level</level>
+                <thread>thread</thread>
+                <logger>logger</logger>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <!-- TCP Logstash Appender -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstash.host:-localhost}:${logstash.port:-5044}</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>true</includeContext>
+            <includeMdc>true</includeMdc>
+            <customFields>{"service":"${spring.application.name:-spring-boot-elastic-apm-logstash}"}</customFields>
+        </encoder>
+        <connectionTimeout>5000</connectionTimeout>
+        <keepAliveDuration>5 minutes</keepAliveDuration>
+    </appender>
+
+    <!-- File Appender for local development -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/elastic-demo.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>true</includeContext>
+            <includeMdc>true</includeMdc>
+            <customFields>{"service":"${spring.application.name:-spring-boot-elastic-apm-logstash}"}</customFields>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/elastic-demo.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="production">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="LOGSTASH"/>
+        </root>
+    </springProfile>
+
+    <!-- Application specific loggers -->
+    <logger name="id.my.hendisantika.elasticapmlogstash" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOGSTASH"/>
+    </logger>
+</configuration>
