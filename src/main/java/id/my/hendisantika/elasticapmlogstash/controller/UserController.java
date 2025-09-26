@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -99,5 +100,13 @@ public class UserController {
             log.error("Error deleting user: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/search")
+    @CaptureTransaction("search-users")
+    public ResponseEntity<List<User>> searchUsers(@RequestParam String name) {
+        log.info("GET /api/users/search?name={} - Searching users", name);
+        List<User> users = userService.searchUsersByName(name);
+        return ResponseEntity.ok(users);
     }
 }
