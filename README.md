@@ -5,18 +5,21 @@ monitoring, logging, and observability.
 
 ## Features
 
-- **Spring Boot 3.1.5** with Java 17
+- **Spring Boot 3.5.6** with Java 25
 - **Elastic APM** integration for application performance monitoring
 - **Logstash** integration for centralized logging
 - **H2 Database** for demonstration (easily replaceable with PostgreSQL/MySQL)
 - **RESTful API** with full CRUD operations
-- **Structured logging** with JSON format
+- **Structured logging** with JSON format using Logstash encoder 8.1
 - **Docker support** with complete ELK stack
 - **Health checks and metrics** via Spring Actuator
+- **Elastic APM Agent 1.55.1** for performance monitoring
+- **Micrometer Elastic Registry** for metrics collection
+- **Lombok** for cleaner code
 
 ## Prerequisites
 
-- Java 17 or higher
+- Java 25 or higher
 - Maven 3.6+
 - Docker and Docker Compose (for local ELK stack)
 
@@ -32,7 +35,7 @@ mvn clean package
 mvn spring-boot:run
 
 # Or run the jar
-java -jar target/elastic-demo-1.0.0.jar
+java -jar target/elastic-apm-logstash-0.0.1-SNAPSHOT.jar
 ```
 
 The application will start on `http://localhost:8080`
@@ -128,7 +131,7 @@ elastic:
   apm:
     server-url: https://your-cluster.apm.us-central1.gcp.cloud.es.io:443
     secret-token: your-secret-token
-    service-name: elastic-demo-app
+    service-name: elastic-apm-logstash-app
     environment: production
 ```
 
@@ -137,8 +140,8 @@ elastic:
 ```
 src/
 ├── main/
-│   ├── java/com/example/elasticdemo/
-│   │   ├── ElasticDemoApplication.java      # Main application class
+│   ├── java/id/my/hendisantika/elasticapmlogstash/
+│   │   ├── ElasticApmLogstashApplication.java      # Main application class
 │   │   ├── controller/
 │   │   │   └── UserController.java          # REST API endpoints
 │   │   ├── service/
@@ -210,7 +213,7 @@ After starting the application, create these visualizations in Kibana:
 
 ```
 # Filter by service
-service_name: "elastic-demo-app"
+service_name: "elastic-apm-logstash-app"
 
 # Filter by log level
 log_level: "ERROR"
@@ -257,18 +260,18 @@ done
 ### 1. Build for Production
 
 ```bash
-mvn clean package -Pprod
+mvn clean package
 ```
 
 ### 2. Docker Deployment
 
 ```bash
-docker build -t elastic-demo:1.0.0 .
+docker build -t elastic-apm-logstash:0.0.1-SNAPSHOT .
 docker run -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=production \
   -e ELASTIC_APM_SERVER_URL=your-apm-url \
   -e ELASTIC_APM_SECRET_TOKEN=your-token \
-  elastic-demo:1.0.0
+  elastic-apm-logstash:0.0.1-SNAPSHOT
 ```
 
 ### 3. Kubernetes Deployment
@@ -277,20 +280,20 @@ docker run -p 8080:8080 \
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: elastic-demo
+  name: elastic-apm-logstash
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: elastic-demo
+      app: elastic-apm-logstash
   template:
     metadata:
       labels:
-        app: elastic-demo
+        app: elastic-apm-logstash
     spec:
       containers:
-        - name: elastic-demo
-          image: elastic-demo:1.0.0
+        - name: elastic-apm-logstash
+          image: elastic-apm-logstash:0.0.1-SNAPSHOT
           ports:
             - containerPort: 8080
           env:
