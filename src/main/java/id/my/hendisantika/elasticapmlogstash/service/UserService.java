@@ -90,4 +90,32 @@ public class UserService {
             MDC.remove("userEmail");
         }
     }
+
+    @CaptureSpan("update-user")
+    public User updateUser(Long id, User userDetails) {
+        MDC.put("userId", String.valueOf(id));
+
+        try {
+            log.info("Updating user with id: {}", id);
+
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> {
+                        log.error("User not found with id: {}", id);
+                        return new RuntimeException("User not found with id: " + id);
+                    });
+
+            user.setName(userDetails.getName());
+            user.setEmail(userDetails.getEmail());
+
+            User updatedUser = userRepository.save(user);
+            log.info("User updated successfully");
+
+            return updatedUser;
+        } catch (Exception e) {
+            log.error("Error updating user with id: {}", id, e);
+            throw e;
+        } finally {
+            MDC.remove("userId");
+        }
+    }
 }
