@@ -158,4 +158,18 @@ public class UserService {
             MDC.remove("searchTerm");
         }
     }
+
+    @CaptureSpan("simulate-slow-operation")
+    public void simulateSlowOperation() {
+        log.info("Starting slow operation simulation");
+
+        try {
+            // Simulate slow database operation
+            Thread.sleep(2000);
+            log.info("Slow operation completed");
+        } catch (InterruptedException e) {
+            log.error("Slow operation interrupted", e);
+            Thread.currentThread().interrupt();
+        }
+    }
 }
