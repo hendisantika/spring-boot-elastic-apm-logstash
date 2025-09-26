@@ -118,4 +118,27 @@ public class UserService {
             MDC.remove("userId");
         }
     }
+
+    @CaptureSpan("delete-user")
+    public void deleteUser(Long id) {
+        MDC.put("userId", String.valueOf(id));
+
+        try {
+            log.info("Deleting user with id: {}", id);
+
+            if (!userRepository.existsById(id)) {
+                log.error("User not found with id: {}", id);
+                throw new RuntimeException("User not found with id: " + id);
+            }
+
+            userRepository.deleteById(id);
+            log.info("User deleted successfully");
+
+        } catch (Exception e) {
+            log.error("Error deleting user with id: {}", id, e);
+            throw e;
+        } finally {
+            MDC.remove("userId");
+        }
+    }
 }
