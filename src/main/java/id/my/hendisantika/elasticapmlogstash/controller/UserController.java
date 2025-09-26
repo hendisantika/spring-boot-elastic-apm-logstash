@@ -123,4 +123,13 @@ public class UserController {
                     .body("Simulated error: " + e.getMessage());
         }
     }
+
+    @PostMapping("/simulate-slow")
+    @CaptureTransaction("simulate-slow-operation")
+    public ResponseEntity<String> simulateSlowOperation() {
+        log.info("POST /api/users/simulate-slow - Starting slow operation");
+
+        userService.simulateSlowOperation();
+        return ResponseEntity.ok("Slow operation completed");
+    }
 }
