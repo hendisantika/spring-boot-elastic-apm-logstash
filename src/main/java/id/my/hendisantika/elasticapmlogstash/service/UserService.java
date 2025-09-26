@@ -66,4 +66,28 @@ public class UserService {
             MDC.remove("userId");
         }
     }
+
+    @CaptureSpan("create-user")
+    public User createUser(User user) {
+        MDC.put("userEmail", user.getEmail());
+
+        try {
+            log.info("Creating new user: {}", user.getEmail());
+
+            if (userRepository.existsByEmail(user.getEmail())) {
+                log.error("User already exists with email: {}", user.getEmail());
+                throw new RuntimeException("User already exists with email: " + user.getEmail());
+            }
+
+            User savedUser = userRepository.save(user);
+            log.info("User created successfully with id: {}", savedUser.getId());
+
+            return savedUser;
+        } catch (Exception e) {
+            log.error("Error creating user", e);
+            throw e;
+        } finally {
+            MDC.remove("userEmail");
+        }
+    }
 }
