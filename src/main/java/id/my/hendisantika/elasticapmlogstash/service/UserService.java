@@ -141,4 +141,21 @@ public class UserService {
             MDC.remove("userId");
         }
     }
+
+    @CaptureSpan("search-users")
+    public List<User> searchUsersByName(String name) {
+        MDC.put("searchTerm", name);
+
+        try {
+            log.info("Searching users by name: {}", name);
+            List<User> users = userRepository.findByNameContaining(name);
+            log.info("Found {} users matching name: {}", users.size(), name);
+            return users;
+        } catch (Exception e) {
+            log.error("Error searching users by name: {}", name, e);
+            throw e;
+        } finally {
+            MDC.remove("searchTerm");
+        }
+    }
 }
