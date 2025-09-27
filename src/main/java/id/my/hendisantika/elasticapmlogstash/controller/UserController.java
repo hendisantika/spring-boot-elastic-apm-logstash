@@ -1,5 +1,6 @@
 package id.my.hendisantika.elasticapmlogstash.controller;
 
+import co.elastic.apm.api.CaptureTransaction;
 import id.my.hendisantika.elasticapmlogstash.entity.User;
 import id.my.hendisantika.elasticapmlogstash.service.UserService;
 import jakarta.validation.Valid;

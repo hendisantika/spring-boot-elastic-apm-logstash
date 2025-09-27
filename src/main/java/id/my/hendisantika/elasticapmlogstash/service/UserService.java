@@ -1,5 +1,7 @@
 package id.my.hendisantika.elasticapmlogstash.service;
 
+import co.elastic.apm.api.CaptureSpan;
+import co.elastic.apm.api.CaptureTransaction;
 import id.my.hendisantika.elasticapmlogstash.entity.User;
 import id.my.hendisantika.elasticapmlogstash.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

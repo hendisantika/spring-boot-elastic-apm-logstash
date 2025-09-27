@@ -45,6 +45,13 @@
         </rollingPolicy>
     </appender>
 
+    <!-- Default profile (no Logstash) -->
+    <springProfile name="!production">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
     <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
@@ -60,8 +67,16 @@
     </springProfile>
 
     <!-- Application specific loggers -->
-    <logger name="id.my.hendisantika.elasticapmlogstash" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="LOGSTASH"/>
-    </logger>
+    <springProfile name="!production">
+        <logger name="id.my.hendisantika.elasticapmlogstash" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="production">
+        <logger name="id.my.hendisantika.elasticapmlogstash" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="LOGSTASH"/>
+        </logger>
+    </springProfile>
 </configuration>

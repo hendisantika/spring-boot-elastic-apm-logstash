@@ -5,6 +5,10 @@ spring:
   profiles:
     active: default
 
+  docker:
+    compose:
+      enabled: false
+
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -34,7 +38,7 @@ elastic:
     service-name: ${spring.application.name}
     service-version: 1.0.0
     environment: ${ELASTIC_APM_ENVIRONMENT:development}
-    application-packages: com.example.elasticdemo
+    application-packages: id.my.hendisantika.elasticapmlogstash
     capture-body: all
     capture-headers: true
     log-level: INFO
@@ -42,9 +46,9 @@ elastic:
 # Logging Configuration
 logging:
   level:
-    com.example.elasticdemo: DEBUG
+    id.my.hendisantika.elasticapmlogstash: INFO
     org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: INFO
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 # Management endpoints
