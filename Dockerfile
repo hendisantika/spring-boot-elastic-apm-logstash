@@ -1,4 +1,4 @@
-FROM amazoncorretto:25-alpine3.22
+FROM amazoncorretto:27-alpine3.22
 LABEL authors="hendisantika"
 
 # Set working directory
