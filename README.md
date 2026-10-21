@@ -1,26 +1,30 @@
 # Spring Boot Elastic Cloud APM & Logstash Demo
 
+[![Java CI with Maven](https://github.com/hendisantika/spring-boot-elastic-apm-logstash/actions/workflows/maven.yml/badge.svg)](https://github.com/hendisantika/spring-boot-elastic-apm-logstash/actions/workflows/maven.yml)
+![Java](https://img.shields.io/badge/Java-25-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.1-brightgreen)
+
 This is a complete Spring Boot application demonstrating integration with Elastic APM and Logstash for comprehensive
 monitoring, logging, and observability.
 
 ## Features
 
-- **Spring Boot 3.5.6** with Java 25
+- **Spring Boot 4.1.1** with Java 25 (LTS)
 - **Elastic APM** integration for application performance monitoring
 - **Logstash** integration for centralized logging
 - **H2 Database** for demonstration (easily replaceable with PostgreSQL/MySQL)
 - **RESTful API** with full CRUD operations
-- **Structured logging** with JSON format using Logstash encoder 8.1
+- **Structured logging** with JSON format using Logstash encoder 9.0
 - **Docker support** with complete ELK stack
 - **Health checks and metrics** via Spring Actuator
-- **Elastic APM Agent 1.55.1** for performance monitoring
+- **Elastic APM Agent 1.55.4** for performance monitoring
 - **Micrometer Elastic Registry** for metrics collection
 - **Lombok** for cleaner code
 
 ## Prerequisites
 
-- Java 25 or higher
-- Maven 3.6+
+- Java 25 or higher (JDK 25 is used in CI)
+- Maven 3.9+ (or use the bundled Maven Wrapper `./mvnw`)
 - Docker and Docker Compose (for local ELK stack)
 
 ## Quick Start
@@ -29,10 +33,10 @@ monitoring, logging, and observability.
 
 ```bash
 # Clone and build
-mvn clean package
+./mvnw clean package
 
 # Run the application
-mvn spring-boot:run
+./mvnw spring-boot:run
 
 # Or run the jar
 java -jar target/elastic-apm-logstash-0.0.1-SNAPSHOT.jar
@@ -44,7 +48,7 @@ The application will start on `http://localhost:8080`
 
 ```bash
 # Build and start all services
-docker-compose up --build
+docker compose up --build
 
 # Services will be available at:
 # - Application: http://localhost:8080
@@ -141,23 +145,22 @@ elastic:
 src/
 ├── main/
 │   ├── java/id/my/hendisantika/elasticapmlogstash/
-│   │   ├── ElasticApmLogstashApplication.java      # Main application class
+│   │   ├── SpringBootElasticApmLogstashApplication.java  # Main application class
 │   │   ├── controller/
 │   │   │   └── UserController.java          # REST API endpoints
 │   │   ├── service/
 │   │   │   └── UserService.java             # Business logic with APM annotations
 │   │   ├── repository/
 │   │   │   └── UserRepository.java          # JPA repository
-│   │   └── model/
+│   │   └── entity/
 │   │       └── User.java                    # Entity model
 │   └── resources/
 │       ├── application.yml                  # Application configuration
 │       └── logback-spring.xml              # Logging configuration
-├── docker-compose.yml                      # Local ELK stack
+├── compose.yml                            # Local ELK stack (Elastic 8.11)
 ├── Dockerfile                              # Application container
 ├── logstash/
-│   ├── config/logstash.yml                 # Logstash configuration
-│   └── pipeline/logstash.conf              # Log processing pipeline
+│   └── config/logstash.yml                 # Logstash configuration
 └── pom.xml                                 # Maven dependencies
 ```
 
@@ -260,7 +263,7 @@ done
 ### 1. Build for Production
 
 ```bash
-mvn clean package
+./mvnw clean package
 ```
 
 ### 2. Docker Deployment
@@ -394,6 +397,12 @@ output {
     - Avoid logging sensitive information
     - Implement log sanitization
     - Configure proper log retention policies
+
+## Continuous Integration
+
+The project is built on every push and pull request to `main` by the
+[Java CI with Maven](.github/workflows/maven.yml) GitHub Actions workflow, which sets up **Temurin JDK 25**
+and runs `mvn -B package` (compile + tests).
 
 ## License
 
